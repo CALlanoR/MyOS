@@ -2,13 +2,12 @@
 # sudo apt-get install g++ binutils libc6-dev-i386
 # sudo apt-get install VirtualBox grub-legacy xorriso
 
+MACHINENAME=MyOS
 GCCPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
 objects = loader.o gdt.o port.o kernel.o
-
-
 
 %.o: %.cpp
 	gcc $(GCCPARAMS) -c -o $@ $<
@@ -36,7 +35,25 @@ mykernel.iso: mykernel.bin
 
 run: mykernel.iso
 	(killall VirtualBox && sleep 1) || true
-	VirtualBox --startvm 'My Operating System' &
+	VBoxManage createvm --name $(MACHINENAME) --ostype "Debian_64" --register
+	VBoxManage modifyvm $(MACHINENAME) --ioapic on
+	VBoxManage modifyvm $(MACHINENAME) --memory 1024 --vram 128
+	VBoxManage modifyvm $(MACHINENAME) --nic1 nat
+
+	#Set memory and network
+	VBoxManage modifyvm $(MACHINENAME) --ioapic on
+	VBoxManage modifyvm $(MACHINENAME) --memory 1024 --vram 128
+	VBoxManage modifyvm $(MACHINENAME) --nic1 nat
+	#Create Disk and connect mykernel iso
+	VBoxManage createhd --filename `pwd`/$(MACHINENAME)/$(MACHINENAME)_DISK.vdi --size 80000 --format VDI
+	VBoxManage storagectl $(MACHINENAME) --name "SATA Controller" --add sata --controller IntelAhci
+	VBoxManage storageattach $(MACHINENAME) --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium  `pwd`/$(MACHINENAME)/$(MACHINENAME)_DISK.vdi
+	VBoxManage storagectl $(MACHINENAME) --name "IDE Controller" --add ide --controller PIIX4
+	VBoxManage storageattach $(MACHINENAME) --storagectl "IDE Controller" --port 1 --device 0 --type dvddrive --medium `pwd`/mykernel.iso
+	VBoxManage modifyvm $(MACHINENAME) --boot1 dvd --boot2 disk --boot3 none --boot4 none
+
+	#Start the VM
+	VBoxHeadless --startvm $(MACHINENAME)
 
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
@@ -44,3 +61,8 @@ install: mykernel.bin
 .PHONY: clean
 clean:
 	rm -f $(objects) mykernel.bin mykernel.iso
+
+
+
+
+

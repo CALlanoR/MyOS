@@ -1,3 +1,17 @@
+/*
+    The linker file will combine the above two files into a one.
+    Every link is controlled by a linker script. This script is written in the linker command language.
+    
+    It takes a number of compiled object files and merges them into a single program, 
+    filling in addresses so that everything is in the right place.
+
+    https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/5_GNUPro_Utilities/c_Using_LD/ldLinker_scripts.html#Concepts
+
+    https://docs.huihoo.com/redhat//rhel-4-docs/rhel-ld-en-4/scripts.html
+
+    https://sourceware.org/binutils/docs-2.25/ld/Scripts.html#Scripts
+*/
+
 ENTRY(loader)
 OUTPUT_FORMAT(elf32-i386)
 OUTPUT_ARCH(i386:i386)

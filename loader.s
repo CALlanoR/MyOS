@@ -1,4 +1,12 @@
+
+# kernelMain is the starting point of our kernel. 
+# This code will set the stack pointer and will call the kernelMain function in our cpp file.
+
+
+# Boot loader will not identify this file as a kernel if we don’t set a special mark to say that it is a kernel. 
+# So we have to put a magic number in the kernel file and that is 0x1badb002.
 .set MAGIC, 0x1badb002
+
 .set FLAGS, (1<<0 | 1<<1)
 .set CHECKSUM, -(MAGIC + FLAGS)
 
@@ -7,12 +15,10 @@
     .long FLAGS
     .long CHECKSUM
 
-
 .section .text
 .extern kernelMain
 .extern callConstructors
 .global loader
-
 
 loader:
     mov $kernel_stack, %esp
@@ -21,7 +27,6 @@ loader:
     push %ebx
     call kernelMain
 
-
 _stop:
     cli
     hlt
@@ -29,6 +34,11 @@ _stop:
 
 
 .section .bss
+
+# When kernel_stack is filled, it is filled from right hand side to left hand side.
+# So it will replace some important content in kernelMain. 
+# To avoid that we should keep some space in the memory in between kernelMain and kernel stack.
 .space 2*1024*1024; # 2 MiB
+
 kernel_stack:
 

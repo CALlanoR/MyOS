@@ -2,7 +2,7 @@
 # sudo apt-get install g++ binutils libc6-dev-i386
 # sudo apt-get install VirtualBox grub-legacy xorriso
 
-MACHINENAME=MyOS
+MACHINENAME = MyOS
 GCCPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 ASPARAMS = --32
 LDPARAMS = -melf_i386
@@ -61,6 +61,7 @@ install: mykernel.bin
 .PHONY: clean
 clean:
 	rm -f $(objects) mykernel.bin mykernel.iso
+	rm -rf MyOS
 
 
 

@@ -1,8 +1,5 @@
-# Reference
-https://github.com/cfenollosa/os-tutorial
+make 
+make install
+make run
 
-https://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf
-
-https://wiki.osdev.org/Main_Page
-
-https://medium.com/@abeysinghechamath/writing-your-own-operating-system-2e0909938249
+tar --exclude=".gitignore" --exclude=".git" -cvzf MyOS.tgz MyOS -R

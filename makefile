@@ -18,6 +18,7 @@ objects = loader.o gdt.o kernel.o
 mykernel.bin: linker.ld $(objects)
 	ld $(LDPARAMS) -T $< -o $@ $(objects)
 
+# https://es.wikipedia.org/wiki/GNU_GRUB
 mykernel.iso: mykernel.bin
 	mkdir iso
 	mkdir iso/boot
